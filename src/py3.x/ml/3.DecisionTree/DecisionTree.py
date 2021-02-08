@@ -8,7 +8,7 @@ Decision Tree Source Code for Machine Learning in Action Ch. 3
 Author: Peter Harrington/片刻
 GitHub: https://github.com/apachecn/AiLearning
 '''
-print(__doc__)
+
 import operator
 from math import log
 import decisionTreePlot as dtPlot
@@ -73,11 +73,12 @@ def calcShannonEnt(dataSet):
     shannonEnt = 0.0
     for key in labelCounts:
         # 使用所有类标签的发生频率计算类别出现的概率。
-        prob = float(labelCounts[key])/numEntries
+        print("Key:", key)
+        prob = float(labelCounts[key]) / numEntries
         # log base 2
         # 计算香农熵，以 2 为底求对数
         shannonEnt -= prob * log(prob, 2)
-        # print('---', prob, prob * log(prob, 2), shannonEnt)
+        print('计算香农熵---', prob, prob * log(prob, 2), shannonEnt)
     # -----------计算香农熵的第一种实现方式end--------------------------------------------------------------------------------
 
     # # -----------计算香农熵的第二种实现方式start--------------------------------------------------------------------------------
@@ -106,7 +107,7 @@ def splitDataSet(dataSet, index, value):
     """
     # -----------切分数据集的第一种方式 start------------------------------------
     retDataSet = []
-    for featVec in dataSet: 
+    for featVec in dataSet:
         # index列为value的数据集【该数据集需要排除index列】
         # 判断index列的值是否为value
         if featVec[index] == value:
@@ -131,7 +132,7 @@ def splitDataSet(dataSet, index, value):
             [1, 2, 3, [4, 5, 6]]
             [1, 2, 3, [4, 5, 6], 7, 8, 9]
             '''
-            reducedFeatVec.extend(featVec[index+1:])
+            reducedFeatVec.extend(featVec[index + 1:])
             # [index+1:]表示从跳过 index 的 index+1行，取接下来的数据
             # 收集结果值 index列为value的行【该行需要排除index列】
             retDataSet.append(reducedFeatVec)
@@ -158,7 +159,8 @@ def chooseBestFeatureToSplit(dataSet):
     numFeatures = len(dataSet[0]) - 1
     # label的信息熵
     baseEntropy = calcShannonEnt(dataSet)
-    # 最优的信息增益值, 和最优的Featurn编号
+    print("dataset:", dataSet, "baseEntropy", baseEntropy)
+    # 最优的信息增益值, 和最优的Feature编号
     bestInfoGain, bestFeature = 0.0, -1
     # iterate over all the features
     for i in range(numFeatures):
@@ -168,13 +170,14 @@ def chooseBestFeatureToSplit(dataSet):
         # get a set of unique values
         # 获取剔重后的集合，使用set对list数据进行去重
         uniqueVals = set(featList)
+        print("第%s列特征全罗列:" % i, uniqueVals)
         # 创建一个临时的信息熵
         newEntropy = 0.0
         # 遍历某一列的value集合，计算该列的信息熵 
         # 遍历当前特征中的所有唯一属性值，对每个唯一属性值划分一次数据集，计算数据集的新熵值，并对所有唯一特征值得到的熵求和。
         for value in uniqueVals:
             subDataSet = splitDataSet(dataSet, i, value)
-            prob = len(subDataSet)/float(len(dataSet))
+            prob = len(subDataSet) / float(len(dataSet))
             newEntropy += prob * calcShannonEnt(subDataSet)
         # gain[信息增益]: 划分数据集前后的信息变化， 获取信息熵最大的值
         # 信息增益是熵的减少或者是数据无序度的减少。最后，比较所有特征中的信息增益，返回最好特征划分的索引值。
@@ -225,7 +228,7 @@ def majorityCnt(classList):
         classCount[vote] += 1
     # 倒叙排列classCount得到一个字典集合，然后取出第一个就是结果（yes/no），即出现次数最多的结果
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
-    # print('sortedClassCount:', sortedClassCount)
+    print('sortedClassCount:', sortedClassCount)
     return sortedClassCount[0][0]
     # -----------majorityCnt的第一种方式 end------------------------------------
 
@@ -260,20 +263,22 @@ def createTree(dataSet, labels):
     bestFeat = chooseBestFeatureToSplit(dataSet)
     # 获取label的名称
     bestFeatLabel = labels[bestFeat]
+    print("bestFeatLabel:", bestFeatLabel)
     # 初始化myTree
     myTree = {bestFeatLabel: {}}
     # 注：labels列表是可变对象，在PYTHON函数中作为参数时传址引用，能够被全局修改
     # 所以这行代码导致函数外的同名变量被删除了元素，造成例句无法执行，提示'no surfacing' is not in list
-    del(labels[bestFeat])
+    del (labels[bestFeat])
     # 取出最优列，然后它的branch做分类
     featValues = [example[bestFeat] for example in dataSet]
     uniqueVals = set(featValues)
+    print("分支类别", uniqueVals)
     for value in uniqueVals:
         # 求出剩余的标签label
         subLabels = labels[:]
         # 遍历当前选择特征包含的所有属性值，在每个数据集划分上递归调用函数createTree()
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat, value), subLabels)
-        # print('myTree', value, myTree)
+        print('myTree', value, myTree)
     return myTree
 
 
@@ -375,7 +380,6 @@ def fishTest():
     # 画图可视化展现
     dtPlot.createPlot(myTree)
 
-
 def ContactLensesTest():
     """
     Desc:
@@ -387,16 +391,20 @@ def ContactLensesTest():
     """
 
     # 加载隐形眼镜相关的 文本文件 数据
-    fr = open('data/3.DecisionTree/lenses.txt')
+    fr = open('/Users/bookforcode/github/AiLearning/data/3.DecisionTree/lenses.txt')
     # 解析数据，获得 features 数据
     lenses = [inst.strip().split('\t') for inst in fr.readlines()]
+    for lense in lenses:
+        print(lense)
     # 得到数据的对应的 Labels
     lensesLabels = ['age', 'prescript', 'astigmatic', 'tearRate']
     # 使用上面的创建决策树的代码，构造预测隐形眼镜的决策树
     lensesTree = createTree(lenses, lensesLabels)
-    print(lensesTree)
+    print("decision tree result:", lensesTree)
     # 画图可视化展现
     dtPlot.createPlot(lensesTree)
+
+
 
 
 if __name__ == "__main__":

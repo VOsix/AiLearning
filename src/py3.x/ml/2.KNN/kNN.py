@@ -13,7 +13,6 @@ import operator
 import os
 from collections import Counter
 
-
 def createDataSet():
     """
     Desc:
@@ -50,7 +49,7 @@ def classify0(inX, dataSet, labels, k):
     kNN.classify0([0,0], group, labels, 3)
     """
 
-    # -----------实现 classify0() 方法的第一种方式----------------------------------------------------------------------------------------------------------------------------
+    # -----------实现 classify0() 方法的第一种方式-------------------------------------------------------------------------
     # 1. 距离计算
     dataSetSize = dataSet.shape[0]
     # tile生成和训练样本对应的矩阵，并与训练样本求差
@@ -114,13 +113,13 @@ def classify0(inX, dataSet, labels, k):
     # b=sorted(a,key=opertator.itemgetter(1,0)) >>>b=[('c',0),('a',1),('b',2)] 这个是先比较第2个元素，然后对第一个元素进行排序，形成多级排序。
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
-    
-    # ------------------------------------------------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------------------------
     # 实现 classify0() 方法的第二种方式
 
     # """
     # 1. 计算距离
-    
+
     # 欧氏距离： 点到点之间的距离
     #    第一行： 同一个点 到 dataSet的第一个点的距离。
     #    第二行： 同一个点 到 dataSet的第二个点的距离。
@@ -129,29 +128,31 @@ def classify0(inX, dataSet, labels, k):
 
     # [[1,2,3],[1,2,3]]-[[1,2,3],[1,2,0]]
     # (A1-A2)^2+(B1-B2)^2+(c1-c2)^2
-    
+
     # inx - dataset 使用了numpy broadcasting，见 https://docs.scipy.org/doc/numpy-1.13.0/user/basics.broadcasting.html
     # np.sum() 函数的使用见 https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.sum.html
     # """
-	#   dist = np.sum((inx - dataset)**2, axis=1)**0.5
-    
-    # """
-    # 2. k个最近的标签
-    
-    # 对距离排序使用numpy中的argsort函数， 见 https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.sort.html#numpy.sort
-    # 函数返回的是索引，因此取前k个索引使用[0 : k]
-    # 将这k个标签存在列表k_labels中
-    # """
-    # k_labels = [labels[index] for index in dist.argsort()[0 : k]]
-	# """
-    # 3. 出现次数最多的标签即为最终类别
-    
-    # 使用collections.Counter可以统计各个标签的出现次数，most_common返回出现次数最多的标签tuple，例如[('lable1', 2)]，因此[0][0]可以取出标签值
-	# """
-    # label = Counter(k_labels).most_common(1)[0][0]
-    # return label
 
-    # ------------------------------------------------------------------------------------------------------------------------------------------
+
+#   dist = np.sum((inx - dataset)**2, axis=1)**0.5
+
+# """
+# 2. k个最近的标签
+
+# 对距离排序使用numpy中的argsort函数， 见 https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.sort.html#numpy.sort
+# 函数返回的是索引，因此取前k个索引使用[0 : k]
+# 将这k个标签存在列表k_labels中
+# """
+# k_labels = [labels[index] for index in dist.argsort()[0 : k]]
+# """
+# 3. 出现次数最多的标签即为最终类别
+
+# 使用collections.Counter可以统计各个标签的出现次数，most_common返回出现次数最多的标签tuple，例如[('lable1', 2)]，因此[0][0]可以取出标签值
+# """
+# label = Counter(k_labels).most_common(1)[0][0]
+# return label
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 
 def test1():
@@ -186,7 +187,7 @@ def file2matrix(filename):
         # 以 '\t' 切割字符串
         listFromLine = line.split('\t')
         # 每列的属性数据，即 features
-        returnMat[index] = listFromLine[0 : 3]
+        returnMat[index] = listFromLine[0: 3]
         # 每列的类别数据，就是 label 标签数据
         classLabelVector.append(int(listFromLine[-1]))
         index += 1
@@ -222,7 +223,7 @@ def autoNorm(dataSet):
     # 将最小值之差除以范围组成矩阵
     normDataSet = normDataSet / tile(ranges, (m, 1))  # element wise divide
     # -------第一种实现方式---end---------------------------------------------
-    
+
     # # -------第二种实现方式---start---------------------------------------
     # norm_dataset = (dataset - minvalue) / ranges
     # # -------第二种实现方式---end---------------------------------------------
@@ -241,7 +242,7 @@ def datingClassTest():
     # 设置测试数据的的一个比例（训练数据集比例=1-hoRatio）
     hoRatio = 0.1  # 测试范围,一部分测试一部分作为样本
     # 从文件中加载数据
-    datingDataMat, datingLabels = file2matrix("data/2.KNN/datingTestSet2.txt")  # load data setfrom file
+    datingDataMat, datingLabels = file2matrix("/Users/bookforcode/github/AiLearning/data/2.KNN/datingTestSet2.txt")  # load data setfrom file
     # 归一化数据
     normMat, ranges, minVals = autoNorm(datingDataMat)
     # m 表示数据的行数，即矩阵的第一维
@@ -252,7 +253,7 @@ def datingClassTest():
     errorCount = 0
     for i in range(numTestVecs):
         # 对数据测试
-        classifierResult = classify0(normMat[i], normMat[numTestVecs : m], datingLabels[numTestVecs : m], 3)
+        classifierResult = classify0(normMat[i], normMat[numTestVecs: m], datingLabels[numTestVecs: m], 3)
         print("the classifier came back with: %d, the real answer is: %d" % (classifierResult, datingLabels[i]))
         errorCount += classifierResult != datingLabels[i]
     print("the total error rate is: %f" % (errorCount / numTestVecs))
@@ -291,7 +292,7 @@ def handwritingClassTest():
     """
     # 1. 导入数据
     hwLabels = []
-    trainingFileList = os.listdir("data/2.KNN/trainingDigits") # load the training set
+    trainingFileList = os.listdir("/Users/bookforcode/github/AiLearning/data/2.KNN/trainingDigits")  # load the training set
     m = len(trainingFileList)
     trainingMat = zeros((m, 1024))
     # hwLabels存储0～9对应的index位置， trainingMat存放的每个位置对应的图片向量
@@ -301,17 +302,17 @@ def handwritingClassTest():
         classNumStr = int(fileStr.split('_')[0])
         hwLabels.append(classNumStr)
         # 将 32*32的矩阵->1*1024的矩阵
-        trainingMat[i] = img2vector('data/2.KNN/trainingDigits/%s' % fileNameStr)
+        trainingMat[i] = img2vector('/Users/bookforcode/github/AiLearning/data/2.KNN/trainingDigits/%s' % fileNameStr)
 
     # 2. 导入测试数据
-    testFileList = os.listdir('data/2.KNN/testDigits')  # iterate through the test set
+    testFileList = os.listdir('/Users/bookforcode/github/AiLearning/data/2.KNN/testDigits')  # iterate through the test set
     errorCount = 0
     mTest = len(testFileList)
     for i in range(mTest):
         fileNameStr = testFileList[i]
         fileStr = fileNameStr.split('.')[0]  # take off .txt
         classNumStr = int(fileStr.split('_')[0])
-        vectorUnderTest = img2vector('data/2.KNN/testDigits/%s' % fileNameStr)
+        vectorUnderTest = img2vector('/Users/bookforcode/github/AiLearning/data/2.KNN/testDigits/%s' % fileNameStr)
         classifierResult = classify0(vectorUnderTest, trainingMat, hwLabels, 3)
         print("the classifier came back with: %d, the real answer is: %d" % (classifierResult, classNumStr))
         errorCount += classifierResult != classNumStr

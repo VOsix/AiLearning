@@ -13,7 +13,7 @@ def createDataSet():
     ''' 数据读入 '''
     data = []
     labels = []
-    with open("data/3.DecisionTree/data.txt") as ifile:
+    with open("/Users/bookforcode/github/AiLearning/data/3.DecisionTree/data.txt") as ifile:
         for line in ifile:
             # 特征： 身高 体重   label： 胖瘦
             tokens = line.strip().split(' ')
@@ -38,14 +38,14 @@ def predict_train(x_train, y_train):
     参考链接： http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier
     '''
     clf = tree.DecisionTreeClassifier(criterion='entropy')
-    # print(clf)
+    print(clf)
     clf.fit(x_train, y_train)
     ''' 系数反映每个特征的影响力。越大表示该特征在分类中起到的作用越大 '''
     print('feature_importances_: %s' % clf.feature_importances_)
 
     '''测试结果的打印'''
     y_pre = clf.predict(x_train)
-    # print(x_train)
+    print(x_train)
     print(y_pre)
     print(y_train)
     print(np.mean(y_pre == y_train))
@@ -114,4 +114,4 @@ if __name__ == '__main__':
     show_precision_recall(x, y, clf, y_train, y_pre)
 
     # 可视化输出
-    show_pdf(clf)
+    # show_pdf(clf)

@@ -23,14 +23,14 @@ iris = datasets.load_iris()
 X = iris.data[:, :2]  # 我们只采用前两个feature. 我们可以使用二维数据集避免这个丑陋的切片
 y = iris.target
 
-# print 'X=', type(X), X
-# print 'y=', type(y), y
+# print('X=', type(X), X)
+# print('y=', type(y), y)
 
 # X = array([[-1.0, -1.1], [-1.0, -1.0], [0, 0], [1.0, 1.1], [2.0, 2.0], [2.0, 2.1]])
-# y = array([0, 0, 0, 1, 1, 1])
-
-# print 'X=', type(X), X
-# print 'y=', type(y), y
+# y = array([0, 0, 0, 1, 1, 2])
+#
+# print('X=', type(X), X)
+# print('y=', type(y), y)
 
 h = .02  # 网格中的步长
 
